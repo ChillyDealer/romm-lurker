@@ -3,36 +3,46 @@ import Room from '../components/room';
 
 const rooms = [
   {
-    name: 'Epison',
+    name: 'Edison lokale 113',
     imageUrl:
-      'https://cdn.shopify.com/s/files/1/1825/4895/files/DSC_7015_1024x1024.jpg?v=1613664053',
+      'https://medarbejdere.au.dk/fileadmin/_processed_/2/c/csm_M1.2_1427-144__1_230b1d36b8.jpg',
     isEmpty: false,
   },
   {
-    name: 'Incuba 2.0',
+    name: 'Incuba 2.0 - Broen',
     imageUrl:
-      'https://hips.hearstapps.com/hmg-prod/images/cute-room-ideas-1677096334.png?crop=0.597xw:1.00xh;0.134xw,0&resize=640:*',
+      'https://incuba.dk/media/33035/Broen_560pixw.jpg',
     isEmpty: true,
   },
   {
-    name: 'Peter Ø',
+    name: 'Peter Bøgh audit',
     imageUrl:
-      'https://media.licdn.com/dms/image/v2/D4D12AQGXqFq-9fjwSw/article-cover_image-shrink_600_2000/article-cover_image-shrink_600_2000/0/1729177188850?e=2147483647&v=beta&t=PrpnZnJqqhdAt_Y7y3zhJ5MG9NiDwIpYfklQAFk4G3I',
+      'https://medarbejdere.au.dk/fileadmin/_processed_/4/0/csm_2636-U1_24b6e59498.jpg',
     isEmpty: false,
   },
     {
-    name: 'Storcenter Nord',
+    name: 'Storcenter Nord audit',
     imageUrl:
-      'https://cdn.thecoolist.com/wp-content/uploads/2022/06/Biggest-Mall-in-America.jpg',
+      'https://kfxproddk.blob.core.windows.net/kfx-prod-dk/venue/6196/images/04c19ecc-3092-4847-bff1-fd813329a8dd.jpg',
     isEmpty: true,
   },
+  {
+    name: 'Eksamenshus',
+    imageUrl:'https://studerende.au.dk/fileadmin/_processed_/b/5/csm_Et_af_de_11_eksamenslokaler_lille_4a50132236.jpg',
+    isEmpty: false,
+  },
+  {
+    name: 'Edison lokale 408',
+    imageUrl:'https://medarbejdere.au.dk/fileadmin/_processed_/4/a/csm_IMG_1041_eea535f21e.jpg',
+    isEmpty: true,
+  }
 ];
 
 const Landing = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f5f7fa] to-[#c3cfe2] py-12 px-4">
       <div className="max-w-7xl mx-auto text-center mb-12">
-        <h1 className="text-5xl font-extrabold text-gray-800 drop-shadow-md tracking-tight">
+        <h1 className="text-5xl font-extrabold text-gray-800 drop-shadow-sm tracking-tight">
           Room Lurker
         </h1>
         <p className="mt-4 text-gray-600 text-3xl max-w-xl mx-auto">

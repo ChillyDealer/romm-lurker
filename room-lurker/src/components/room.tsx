@@ -8,7 +8,7 @@ type RoomProps = {
 
 const Room: React.FC<RoomProps> = ({ name, imageUrl, isEmpty }) => {
   return (
-    <div className="w-64 rounded-3xl overflow-hidden shadow-lg border border-gray-200 bg-white/90 backdrop-blur-md m-4 transform transition duration-300 hover:scale-105 hover:shadow-2xl">
+    <div className="w-64 rounded-3xl overflow-hidden shadow-lg bg-white backdrop-blur-md m-4 transform transition duration-500 hover:scale-110 hover:shadow-md">
       <img
         src={imageUrl}
         alt={name}
