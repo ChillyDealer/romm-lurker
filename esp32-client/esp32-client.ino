@@ -1,9 +1,10 @@
 #include <WiFi.h>
 #include <WiFiUdp.h>
 #include <coap-simple.h>
+#include <esp_wpa2.h>
+#include "secrets.h"
 
-const char* ssid = "Tyk måge";
-const char* password = "Oliver1234";
+const char* ssid = "eduroam";
 
 IPAddress server(192, 168, 1, 100);
 int port = 5683;
@@ -28,10 +29,20 @@ void setup() {
   Serial.begin(115200);
   Serial.println("\n[CoAP Client - hirotakaster Library - Final Corrected Version]");
 
-  WiFi.begin(ssid, password);
+  WiFi.disconnect(true);
+  delay(1000);
+
+  WiFi.mode(WIFI_STA);
+  esp_wifi_sta_wpa2_ent_set_identity((uint8_t *)username, strlen(username));
+  esp_wifi_sta_wpa2_ent_set_username((uint8_t *)username, strlen(username));
+  esp_wifi_sta_wpa2_ent_set_password((uint8_t *)password, strlen(password));
+  esp_wifi_sta_wpa2_ent_set_ca_cert(NULL, 0);
+  esp_wifi_sta_wpa2_ent_enable();
+  WiFi.begin(ssid);
+
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
-    Serial.print(".");
+    Serial.print(".:");
   }
   Serial.println("\nWiFi connected!");
   Serial.print("IP address: ");
