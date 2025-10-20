@@ -3,6 +3,9 @@
 #include <coap-simple.h>
 #include <esp_wpa2.h>
 #include "secrets.h"
+#include "sound.h"
+
+// Der kommer deprecated besked om wifi ved compile, bare ignorer
 
 const char* ssid = "eduroam";
 
@@ -40,6 +43,9 @@ void setup() {
   esp_wifi_sta_wpa2_ent_enable();
   WiFi.begin(ssid);
 
+  Serial.print("MAC Address: ");
+  Serial.println(WiFi.macAddress());
+
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".:");
@@ -47,15 +53,22 @@ void setup() {
   Serial.println("\nWiFi connected!");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
+  
 
   coap.response(response_callback);
 
   coap.start();
+
+  initSound();
 }
 
 void loop() {
   char payload[] = "25.5";
   
+  if (readSound()) {
+    Serial.println("I GOT SOUND!!");
+  }
+
   Serial.println("\nSending CoAP POST request to /sensor/temp...");
   
   // Use coap.send() to construct and send the packet.
