@@ -1,7 +1,7 @@
 // landing.tsx
-import React, { useEffect, useState } from 'react';
-import Room from '../components/room';
-import mqtt from 'mqtt';
+import React, { useEffect, useState } from "react";
+import Room from "../components/room";
+import mqtt from "mqtt";
 
 type RoomData = {
   name: string;
@@ -9,58 +9,89 @@ type RoomData = {
   isEmpty: boolean;
 };
 
-const AllRooms: Omit<RoomData, 'isEmpty'>[] = [
+const AllRooms: Omit<RoomData, "isEmpty">[] = [
   {
-    name: 'Edison lokale 113',
-    imageUrl: 'https://medarbejdere.au.dk/fileadmin/_processed_/2/c/csm_M1.2_1427-144__1_230b1d36b8.jpg',
+    name: "Edison lokale 113",
+    imageUrl:
+      "https://medarbejdere.au.dk/fileadmin/_processed_/2/c/csm_M1.2_1427-144__1_230b1d36b8.jpg",
   },
   {
-    name: 'Incuba 2.0 - Broen',
-    imageUrl: 'https://incuba.dk/media/33035/Broen_560pixw.jpg',
+    name: "Peter Bøgh Audit",
+    imageUrl:
+      "https://medarbejdere.au.dk/fileadmin/_processed_/4/0/csm_2636-U1_24b6e59498.jpg",
   },
   {
-    name: 'Peter Bøgh Audit',
-    imageUrl: 'https://medarbejdere.au.dk/fileadmin/_processed_/4/0/csm_2636-U1_24b6e59498.jpg',
+    name: "Eksamenshus",
+    imageUrl:
+      "https://studerende.au.dk/fileadmin/_processed_/b/5/csm_Et_af_de_11_eksamenslokaler_lille_4a50132236.jpg",
   },
   {
-    name: 'Storcenter Nord Audit',
-    imageUrl: 'https://kfxproddk.blob.core.windows.net/kfx-prod-dk/venue/6196/images/04c19ecc-3092-4847-bff1-fd813329a8dd.jpg',
+    name: "Edison lokale 408",
+    imageUrl:
+      "https://medarbejdere.au.dk/fileadmin/_processed_/4/a/csm_IMG_1041_eea535f21e.jpg",
   },
   {
-    name: 'Eksamenshus',
-    imageUrl: 'https://studerende.au.dk/fileadmin/_processed_/b/5/csm_Et_af_de_11_eksamenslokaler_lille_4a50132236.jpg',
+    name: "Edison lokale 113",
+    imageUrl:
+      "https://medarbejdere.au.dk/fileadmin/_processed_/2/c/csm_M1.2_1427-144__1_230b1d36b8.jpg",
   },
   {
-    name: 'Edison lokale 408',
-    imageUrl: 'https://medarbejdere.au.dk/fileadmin/_processed_/4/a/csm_IMG_1041_eea535f21e.jpg',
-  }
+    name: "Peter Bøgh Audit",
+    imageUrl:
+      "https://medarbejdere.au.dk/fileadmin/_processed_/4/0/csm_2636-U1_24b6e59498.jpg",
+  },
+  {
+    name: "Eksamenshus",
+    imageUrl:
+      "https://studerende.au.dk/fileadmin/_processed_/b/5/csm_Et_af_de_11_eksamenslokaler_lille_4a50132236.jpg",
+  },
+  {
+    name: "Edison lokale 408",
+    imageUrl:
+      "https://medarbejdere.au.dk/fileadmin/_processed_/4/a/csm_IMG_1041_eea535f21e.jpg",
+  },
+    {
+    name: "Eksamenshus",
+    imageUrl:
+      "https://studerende.au.dk/fileadmin/_processed_/b/5/csm_Et_af_de_11_eksamenslokaler_lille_4a50132236.jpg",
+  },
+  {
+    name: "Edison lokale 408",
+    imageUrl:
+      "https://medarbejdere.au.dk/fileadmin/_processed_/4/a/csm_IMG_1041_eea535f21e.jpg",
+  },
 ];
 
 const Landing = () => {
   const [rooms, setRooms] = useState<RoomData[]>(
-    AllRooms.map(room => ({ ...room, isEmpty: true })) // default true
+    AllRooms.map((room) => ({ ...room, isEmpty: true })) // default true
   );
 
   useEffect(() => {
-    const client = mqtt.connect('ws://localhost:8083/mqtt'); // use raspberry pi ip
+    const client = mqtt.connect("ws://localhost:8083/mqtt"); // use raspberry pi ip
 
-    client.on('connect', () => {
-      console.log('connected mqtt');
-      client.subscribe('rooms/+/emptyStatus'); // + er wildcard
+    client.on("connect", () => {
+      console.log("connected mqtt");
+      client.subscribe("rooms/+/emptyStatus"); // + er wildcard
     });
 
-    client.on('message', (topic, payload) => {
+    client.on("message", (topic, payload) => {
       try {
-        const data = JSON.parse(payload.toString()) as { roomId: string; isEmpty: boolean };
+        const data = JSON.parse(payload.toString()) as {
+          roomId: string;
+          isEmpty: boolean;
+        };
 
         // room by name
-        setRooms(prev =>
-          prev.map(room =>
-            room.name === data.roomId ? { ...room, isEmpty: data.isEmpty } : room
+        setRooms((prev) =>
+          prev.map((room) =>
+            room.name === data.roomId
+              ? { ...room, isEmpty: data.isEmpty }
+              : room
           )
         );
       } catch (err) {
-        console.error('error:', err);
+        console.error("error:", err);
       }
     });
 
