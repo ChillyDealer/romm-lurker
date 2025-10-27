@@ -7,9 +7,11 @@
 
 // Der kommer deprecated besked om wifi ved compile, bare ignorer
 
-const char* ssid = "eduroam";
+const char* ssid = "ohhhhhh";
+const char* password = "123burger";
 
-IPAddress server(192, 168, 1, 100);
+
+IPAddress server(192, 168, 137, 154);
 int port = 5683;
 
 WiFiUDP udp;
@@ -36,12 +38,7 @@ void setup() {
   delay(1000);
 
   WiFi.mode(WIFI_STA);
-  esp_wifi_sta_wpa2_ent_set_identity((uint8_t *)username, strlen(username));
-  esp_wifi_sta_wpa2_ent_set_username((uint8_t *)username, strlen(username));
-  esp_wifi_sta_wpa2_ent_set_password((uint8_t *)password, strlen(password));
-  esp_wifi_sta_wpa2_ent_set_ca_cert(NULL, 0);
-  esp_wifi_sta_wpa2_ent_enable();
-  WiFi.begin(ssid);
+  WiFi.begin(ssid, password);
 
   Serial.print("MAC Address: ");
   Serial.println(WiFi.macAddress());
