@@ -1,5 +1,5 @@
 #define SOUND_SENSOR_PIN 34
-#define SOUND_THRESHOLD 2000
+#define SOUND_THRESHOLD 1000
 
 const int numReadings = 10;
 int readings[numReadings];
@@ -20,6 +20,7 @@ void initSound() {
 
 bool readSound() {
   int rawSoundValue = analogRead(SOUND_SENSOR_PIN);
+  Serial.println(rawSoundValue);
   
   total = total - readings[readIndex];
   readings[readIndex] = rawSoundValue;

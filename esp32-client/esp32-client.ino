@@ -51,7 +51,6 @@ void setup() {
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
   
-
   coap.response(response_callback);
 
   coap.start();
@@ -80,5 +79,5 @@ void loop() {
   }
 
   // Wait before sending the next packet
-  delay(9000); 
+  delay(1000); 
 }
