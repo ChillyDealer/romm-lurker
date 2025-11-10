@@ -28,7 +28,7 @@ void response_callback(CoapPacket& packet, IPAddress ip, int port) {
 
 void setup() {
   Serial.begin(115200);
-  Serial.println("\n[CoAP Client - hirotakaster Library - Final Corrected Version]");
+  Serial.println("ESP32 started. Using CoAP-Simple library");
 
   WiFi.disconnect(true);
   delay(1000);
@@ -59,27 +59,12 @@ void loop() {
 
   int soundReading = readSound();
   if (soundReading > 0) {
-    Serial.println("Sound detected, sending CoAP request.");
+    Serial.println("Sound detected, sending CoAP post.");
 
     char payload[20];
     itoa(soundReading, payload, 10);
     coap.send(
       server, port, "ps/sensor/sound?clientid=esp32",
-      COAP_NONCON,
-      COAP_POST,
-      NULL, 0,
-      (uint8_t*)payload, strlen(payload));
-  }
-
-  static unsigned long lastSend = 0;
-  if (millis() - lastSend > 5000) {  // Send every 5 seconds
-    lastSend = millis();
-
-    char payload[] = "{\"temp\": 25.5}";
-    Serial.println("Sending CoAP POST...");
-
-    coap.send(
-      server, port, "ps/sensor/temp?clientid=esp32",
       COAP_NONCON,
       COAP_POST,
       NULL, 0,
