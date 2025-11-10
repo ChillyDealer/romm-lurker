@@ -35,16 +35,6 @@ export const mqttConfigs = {
     protocol: "ws" as const,
   },
 
-  // cloud setup, not finished... idk if we need it at all
-  cloud: {
-    ...mqttConfig,
-    host: "",
-    port: 8084,
-    protocol: "wss" as const,
-    username: "",
-    password: "",
-  },
-
   public: {
     ...mqttConfig,
     host: "broker.emqx.io",
@@ -58,9 +48,7 @@ export const mqttConfigs = {
 export const getCurrentMqttConfig = () => {
   const env = process.env.NODE_ENV;
 
-  if (env === "production") {
-    return mqttConfigs.cloud;
-  } else if (env === "development") {
+   if (env === "development") {
     return mqttConfigs.local;
   } else {
     return mqttConfigs.public; 
