@@ -18,9 +18,8 @@ void initSound() {
   }
 }
 
-bool readSound() {
+int readSound() {
   int rawSoundValue = analogRead(SOUND_SENSOR_PIN);
-  Serial.println(rawSoundValue);
   
   total = total - readings[readIndex];
   readings[readIndex] = rawSoundValue;
@@ -35,9 +34,9 @@ bool readSound() {
       // Gør noget her
       lastTriggerTime = currentTime;
 
-      return true;
+      return rawSoundValue;
     }
   }
 
-  return false;
+  return 0;
 }
