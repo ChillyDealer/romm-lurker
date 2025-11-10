@@ -16,7 +16,6 @@ export const mqttConfig = {
 
   topics: {
     roomStatus: "rooms/+/emptyStatus",
-    roomStatusSpecific: (roomId: string) => `rooms/${roomId}/emptyStatus`,
   },
 
   // data priority
