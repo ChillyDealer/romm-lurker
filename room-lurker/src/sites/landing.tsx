@@ -59,40 +59,43 @@ const Landing = () => {
     const client = mqtt.connect(url, connectOptions);
 
     client.on("connect", () => {
-      console.log("Connected to EMQX MQTT broker successfully!");
+      console.log("emqx connected");
       client.subscribe(config.topics.roomStatus, { qos: config.qos.roomUpdates }, (err) => {
         if (err) {
-          console.error("Subscribe error:", err);
+          console.error("error:", err);
         } else {
-          console.log(`Successfully subscribed to ${config.topics.roomStatus}`);
+          console.log(`subbed to ${config.topics.roomStatus}`);
         }
       });
     });
 
     client.on("error", (err) => {
-      console.error("MQTT connection error:", err);
+      console.error("mqtt error:", err);
     });
 
     client.on("offline", () => {
-      console.log("MQTT client is offline");
+      console.log("mqtt offline");
     });
 
     client.on("reconnect", () => {
-      console.log("MQTT client is reconnecting...");
+      console.log("mqtt reconnecting");
     });
 
     client.on("message", (topic, payload) => {
       try {
-        console.log(`Received message on topic ${topic}:`, payload.toString());
+        console.log(`msg: ${topic}:`, payload.toString());
+        
+        const splitTopic = topic.split('/');
+        const roomTopic = splitTopic[1]; // room name from topic
+        
         const data = JSON.parse(payload.toString()) as {
-          roomId: string;
           isEmpty: boolean;
         };
 
-        // room state update
+        // update room state
         setRooms((prev) =>
           prev.map((room) =>
-            room.name === data.roomId
+            room.name === roomTopic
               ? { ...room, isEmpty: data.isEmpty }
               : room
           )
