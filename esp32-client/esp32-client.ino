@@ -3,6 +3,7 @@
 #include <coap-simple.h>
 #include <esp_wpa2.h>
 #include "sound.h"
+#include "coap-helper.h"
 
 // Der kommer deprecated besked om wifi ved compile, bare ignorer
 // Hvis EMQX svarer 400 error, prøv at comment packet.addOption(COAP_URI_HOST... i coap-simple.cpp i librariet under user/documents/arduino. Det kan også være mange andre ting.
@@ -10,19 +11,27 @@
 const char* ssid = "ohhhhhh";
 const char* password = "123burger";
 
-
 IPAddress server(192, 168, 137, 154);
 int port = 5683;
 
 WiFiUDP udp;
 Coap coap(udp);
 
+int ticker = 0;
+bool gotSoundInInterval = false;
+
 void response_callback(CoapPacket& packet, IPAddress ip, int port) {
   Serial.println("[CoAP Response Received]");
   Serial.println("Msg ID:");
   Serial.println(packet.messageid);
-  Serial.println("Code:");
-  Serial.println(packet.code);
+
+  uint8_t codeClass = packet.code >> 5;
+  uint8_t codeDetail = packet.code & 0x1F;
+
+  Serial.println("Code class:");
+  Serial.println(codeClass);
+  Serial.println("Code detail:");
+  Serial.println(codeDetail);
   Serial.println("");
 }
 
@@ -57,19 +66,17 @@ void setup() {
 void loop() {
   coap.loop();
 
-  int soundReading = readSound();
-  if (soundReading > 0) {
+  if (readSound() > 0) gotSoundInInterval = true;
+
+  if (ticker >= 1000 && gotSoundInInterval) {
     Serial.println("Sound detected, sending CoAP post.");
 
-    char payload[20];
-    itoa(soundReading, payload, 10);
-    coap.send(
-      server, port, "ps/sensor/sound?clientid=esp32",
-      COAP_NONCON,
-      COAP_POST,
-      NULL, 0,
-      (uint8_t*)payload, strlen(payload));
+    sendValueCoap(coap, server, port, "sensor/sound", "");
+
+    gotSoundInInterval = false;
+    ticker = 0;
   }
 
+  ticker++;
   delay(10);
 }
