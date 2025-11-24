@@ -3,6 +3,8 @@
 #include <coap-simple.h>
 #include <esp_wpa2.h>
 #include "sound.h"
+#include "light.h"
+#include "motion.h"
 #include "coap-helper.h"
 
 // Der kommer deprecated besked om wifi ved compile, bare ignorer
@@ -19,6 +21,7 @@ Coap coap(udp);
 
 int ticker = 0;
 bool gotSoundInInterval = false;
+bool gotMotionInInterval = false;
 
 void response_callback(CoapPacket& packet, IPAddress ip, int port) {
   Serial.println("[CoAP Response Received]");
@@ -61,22 +64,48 @@ void setup() {
   coap.start();
 
   initSound();
+  initLight();
+  initMotion();
 }
 
 void loop() {
+  // Stuff to do every 10 ms ---------------------------
+  
   coap.loop();
 
   if (readSound() > 0) gotSoundInInterval = true;
+  if (readMotion()) gotMotionInInterval = true;
 
-  if (ticker >= 1000 && gotSoundInInterval) {
+  delay(10);
+
+  if (ticker < 1000) {
+    ticker++;
+    return;
+  }
+
+  // Stuff to do every 10 seconds ----------------------
+
+  if (gotSoundInInterval) {
     Serial.println("Sound detected, sending CoAP post.");
 
     sendValueCoap(coap, server, port, "sensor/sound", "");
 
     gotSoundInInterval = false;
-    ticker = 0;
   }
 
-  ticker++;
-  delay(10);
+  if (gotMotionInInterval) {
+    Serial.println("Motion detected, sending CoAP post.");
+
+    sendValueCoap(coap, server, port, "sensor/motion", "");
+
+    gotMotionInInterval = false;
+  }
+
+  if (readLight()) {
+    Serial.println("Light detected, sending CoAP post.");
+
+    sendValueCoap(coap, server, port, "sensor/light", "");
+  }
+
+  ticker = 0;
 }

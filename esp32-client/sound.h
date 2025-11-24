@@ -31,7 +31,6 @@ int readSound() {
     unsigned long currentTime = millis();
     
     if (currentTime - lastTriggerTime > triggerCooldown) {
-      // Gør noget her
       lastTriggerTime = currentTime;
 
       return rawSoundValue;
