@@ -20,6 +20,7 @@ WiFiUDP udp;
 Coap coap(udp);
 
 int ticker = 0;
+bool isEmpty = true;
 bool gotSoundInInterval = false;
 bool gotMotionInInterval = false;
 
@@ -70,7 +71,7 @@ void setup() {
 
 void loop() {
   // Stuff to do every 10 ms ---------------------------
-  
+
   coap.loop();
 
   if (readSound() > 0) gotSoundInInterval = true;
@@ -85,27 +86,23 @@ void loop() {
 
   // Stuff to do every 10 seconds ----------------------
 
-  if (gotSoundInInterval) {
-    Serial.println("Sound detected, sending CoAP post.");
+  bool detected = gotSoundInInterval || gotMotionInInterval || readLight();
+  char payload[64];
 
-    sendValueCoap(coap, server, port, "sensor/sound", "");
-
-    gotSoundInInterval = false;
+  if (detected && isEmpty) {  // If occupied
+    snprintf(payload, sizeof(payload), "{\"isEmpty\": false}");
+    sendValueCoap(coap, server, port, "rooms/Eksamenshus/emptyStatus", payload);
+    Serial.println("Occupied, sending CoAP post.");
+    isEmpty = false;
+  } else if (!detected && !isEmpty) {  // If empty
+    snprintf(payload, sizeof(payload), "{\"isEmpty\": true}");
+    sendValueCoap(coap, server, port, "rooms/Eksamenshus/emptyStatus", payload);
+    Serial.println("Empty, sending CoAP post.");
+    isEmpty = true;
   }
 
-  if (gotMotionInInterval) {
-    Serial.println("Motion detected, sending CoAP post.");
-
-    sendValueCoap(coap, server, port, "sensor/motion", "");
-
-    gotMotionInInterval = false;
-  }
-
-  if (readLight()) {
-    Serial.println("Light detected, sending CoAP post.");
-
-    sendValueCoap(coap, server, port, "sensor/light", "");
-  }
+  gotSoundInInterval = false;
+  gotMotionInInterval = false;
 
   ticker = 0;
 }

@@ -1,6 +1,6 @@
 void sendValueCoap(Coap& coap, IPAddress server, int port, const char* topic, const char* payload) {
   char url[128];
-  snprintf(url, sizeof(url), "ps/%s?clientid=esp32", topic);
+  snprintf(url, sizeof(url), "ps/%s?clientid=esp32&retain=true", topic);
 
   auto resp = coap.send(
     server,
